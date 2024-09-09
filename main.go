@@ -23,6 +23,7 @@ const (
 	udp           = "udp4"
 	pingMsg       = "ping"
 	pongMsg       = "pong"
+	keepaliveMsg  = "keepalive"
 	timeoutMillis = 500
 )
 
@@ -53,7 +54,6 @@ func main() { //nolint:gocognit
 	var peerAddrChan <-chan string
 
 	keepalive := time.Tick(timeoutMillis * time.Millisecond)
-	keepaliveMsg := pingMsg
 
 	for {
 		select {
@@ -63,6 +63,8 @@ func main() { //nolint:gocognit
 			}
 
 			switch {
+			case string(message) == keepaliveMsg:
+				continue
 			case stun.IsMessage(message):
 				m := new(stun.Message)
 				m.Raw = message
@@ -85,7 +87,7 @@ func main() { //nolint:gocognit
 				}
 
 			default:
-				log.Println("Message: ", message)
+				log.Println("Message: ", string(message))
 			}
 
 		case peerStr := <-peerAddrChan:
