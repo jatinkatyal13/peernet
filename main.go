@@ -82,7 +82,6 @@ func main() { //nolint:gocognit
 					publicAddr = xorAddr
 
 					peerAddrChan = getPeerAddr()
-					inputChan = inputStream()
 				}
 
 			default:
@@ -94,6 +93,7 @@ func main() { //nolint:gocognit
 			if err != nil {
 				log.Panicln("resolve peeraddr:", err)
 			}
+			inputChan = inputStream()
 
 		case input := <-inputChan:
 			if peerAddr == nil {
